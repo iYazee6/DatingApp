@@ -1,0 +1,15 @@
+<h4>
+    Internal Server Error .. Refreshing the page will make the error disapear!
+</h4>
+    <h5 class="text-danger">{{error?.statusCode}} Error ({{error?.message}})</h5>
+    <p class="font-weight-bold">Note: if you're seeing this Angular propably isn't the one to blame.</p>
+    <p>Try doing the next (What to do?):</p>
+    <ul>
+        <li>Open chrome's developer tools</li>
+        <li>Inspect the network tab</li>
+        <li>Check failing requests</li>
+        <li>Examing the request url - make sure it is correct</li>
+        <li>Reproduce the error inside Postman - if we see the same response, then the issue is not with Angular</li>
+    </ul>
+    <p>following is the stack trace - this is where you should start:</p>
+    <code class="mt-5" style="background-color:whitesmoke"> {{error?.details}} </code>
