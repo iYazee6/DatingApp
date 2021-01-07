@@ -1,15 +1,16 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+//import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { HostBinding, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+// import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Member } from '../_models/member';
 
-// This is a temp solution, will be better 
-const httpOptions = {
-  headers: new HttpHeaders ({
-    Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user'))?.token
-  })
-};
+// // This is a temp solution, will be better 
+// const httpOptions = {
+//   headers: new HttpHeaders ({
+//     Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('user'))?.token
+//   })
+// };
 
 @Injectable({
   providedIn: 'root'
