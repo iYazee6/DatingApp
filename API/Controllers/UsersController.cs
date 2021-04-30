@@ -76,7 +76,7 @@ namespace API.Controllers
         */
 
         // api/Yazeed
-        [HttpGet("{username}")]
+        [HttpGet("{username}", Name= "GetUser")]
         //[Authorize]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
@@ -140,7 +140,11 @@ namespace API.Controllers
 
             user.Photos.Add(photo);
 
-            if(await _repo.SaveAllAsync()) return _mapper.Map<PhotoDto>(photo);
+            if(await _repo.SaveAllAsync()){
+                //return _mapper.Map<PhotoDto>(photo); 
+                // Modified to return status 201 Created
+                return CreatedAtRoute("GetUser", new { username = User.GetUsername() }, _mapper.Map<PhotoDto>(photo));
+            }
 
             return BadRequest("Problem Adding Photo.");
         }
