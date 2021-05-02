@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 // import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Member } from '../_models/member';
+import { Photo } from '../_models/photo';
 
 // // This is a temp solution, will be better 
 // const httpOptions = {
@@ -51,6 +52,11 @@ export class MembersService {
         this.members[index] = member;
       })
     );
+  }
+
+  setMainPhoto(photoId: number){
+    // because it's a PUT we need to send a body and we sent an empty body {}
+    return this.http.put(this.baseUrl + 'users/set-main-photo/'+photoId, {});
   }
 
 }
