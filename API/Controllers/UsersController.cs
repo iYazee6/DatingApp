@@ -164,5 +164,24 @@ namespace API.Controllers
 
             return (await _repo.SaveAllAsync())? NoContent() : BadRequest("Failed to set photo as default");
         }
+
+        [HttpDelete("delete-photo/{photoId}")]
+        public async Task<ActionResult> DeletePhoto(int photoId){
+            var user = await _repo.GetUserByUsername(User.GetUsername());
+
+            var photo = user.Photos.FirstOrDefault(p => p.Id == photoId);
+            if(photo == null) return NotFound("Couldn't find the photo you entered");
+            if(photo.isMain) return BadRequest("You can't delete your main photo!");
+
+            if(photo.PublicId != null){
+             var result = await _photoService.DeletePhotoAsync(photo.PublicId);   
+
+             if(result.Error != null) return BadRequest(result.Error.Message);
+            }
+
+            user.Photos.Remove(photo);
+
+            return (await _repo.SaveAllAsync())? NoContent() : BadRequest("Failed to set photo as default");
+        }
     }
 }
