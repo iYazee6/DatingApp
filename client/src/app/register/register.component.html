@@ -1,47 +1,10 @@
 <form [formGroup]="registerForm" (submit)="register()" autocomplete="off">
     <h2 class="text-center text-primary">Sign up</h2>
-    <div class="form-group">
-        <input
-            [class.is-invalid]="registerForm.get('username').errors && registerForm.get('username').touched"
-            [class.is-valid]="!registerForm.get('username').errors && registerForm.get('username').touched"
-            type="text" 
-            autocomplete="username" 
-            formControlName="username" 
-            class="form-control" 
-            placeholder="Username" />
-            <div class="invalid-feedback"> Please enter a username </div>
-    </div>
-    <!-- <div class="form-group">
-        <label>Who is your favorite user? <3</label>
-        <select class="form-control">
-            <option *ngFor="let user of UsersFromHomeComponent" [value]="user.userName">{{user.userName}}</option>
-        </select>
-    </div> -->
-    <div class="form-group">
-        <input 
-            [class.is-invalid]="registerForm.get('password').errors && registerForm.get('password').touched"
-            [class.is-valid]="!registerForm.get('password').errors && registerForm.get('password').touched"
-            type="password" 
-            autocomplete="current-password" 
-            formControlName="password" 
-            class="form-control" 
-            placeholder="Password" />
-            <div *ngIf="registerForm.get('password').hasError('required')" class="invalid-feedback">Please enter a password</div>
-            <div *ngIf="registerForm.get('password').hasError('minlength')" class="invalid-feedback">Password must be at least (4) charecters</div>
-            <div *ngIf="registerForm.get('password').hasError('maxlength')" class="invalid-feedback">Password must be at most (8) charecters</div>
-    </div>
-    <div class="form-group">
-        <input
-            [class.is-invalid]="registerForm.get('confirmPassword').errors && registerForm.get('confirmPassword').touched" 
-            [class.is-valid]="!registerForm.get('confirmPassword').errors && registerForm.get('confirmPassword').touched" 
-            type="password" 
-            autocomplete="new-password" 
-            formControlName="confirmPassword" 
-            class="form-control" 
-            placeholder="Password Confimation" />
-        <div *ngIf="registerForm.get('confirmPassword').hasError('required')" class="invalid-feedback">Please enter password confirmation</div>
-        <div *ngIf="registerForm.get('confirmPassword').hasError('isMatching')" class="invalid-feedback">Password and Password confirmation must match</div>
-    </div>
+    
+    <app-text-input [formControl]='registerForm.controls["username"]' [label]='"username"'></app-text-input>
+    <app-text-input [formControl]='registerForm.controls["password"]' [label]='"password"' [type]='"password"'></app-text-input>
+    <app-text-input [formControl]='registerForm.controls["confirmPassword"]' [label]='"confirmPassword"' [type]='"password"'></app-text-input>
+    
     <button class="btn btn-primary btn-lg btn-block" type="submit">Register</button>
     <button class="btn btn-danger btn-lg btn-block" (click)="cancel()" type="button">Cancel</button>
 </form>
