@@ -6,6 +6,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interface;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,34 +16,38 @@ namespace API.Controllers
     {
         private readonly DataContext _context;
         private readonly ITokenService _tokenService;
-        public AccountController(DataContext context, ITokenService tokenService)
+        private readonly IMapper _mapper;
+
+        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper)
         {
             _tokenService = tokenService;
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
-        {
+        {   
             if (await UserExists(registerDto.Username))
-                return BadRequest("Username is taken!.");
+                return BadRequest("Username is taken!, Please choose another username.");
 
             using var hmac = new HMACSHA512();
 
-            var user = new AppUser
-            {
-                UserName = registerDto.Username,
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                PasswordSalt = hmac.Key
-            };
+            var user = _mapper.Map<AppUser>(registerDto);
+
+            user.UserName = registerDto.Username;
+            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
+            user.PasswordSalt = hmac.Key;
 
             _context.Users.Add(user);
 
             await _context.SaveChangesAsync();
 
-            return new UserDto {
+            return new UserDto
+            {
                 Username = user.UserName,
-                Token = _tokenService.createToken(user)
+                Token = _tokenService.createToken(user),
+                KnownAs = user.KnownAs
             };
         }
 
@@ -64,11 +69,21 @@ namespace API.Controllers
                 if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Password is invalid!");
             }
 
-            return new UserDto {
+            return new UserDto
+            {
                 Username = user.UserName,
                 Token = _tokenService.createToken(user),
-                PhotoUrl = user.Photos.FirstOrDefault(x => x.isMain)?.Url
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.isMain)?.Url,
+                KnownAs = user.KnownAs
             };
+        }
+
+        [HttpPost("CheckUsername/{username}")]
+        public async Task<bool> CheckUsername(string username)
+        {
+            return await _context.Users.AnyAsync(u => u.UserName.ToLower().Equals(username.ToLower()));
+            //await _context.Users.AnyAsync(u => u.UserName.Equals(username, System.StringComparison.OrdinalIgnoreCase));
+            // This isn't supported by SQLite.
         }
 
         private async Task<bool> UserExists(string username)

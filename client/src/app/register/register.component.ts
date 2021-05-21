@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AccountsService } from '../_services/accounts.service';
 
@@ -11,11 +12,11 @@ import { AccountsService } from '../_services/accounts.service';
 export class RegisterComponent implements OnInit {
   // @Input() UsersFromHomeComponent;
   @Output() ChangeRegistrationStatus = new EventEmitter();
-  model: any = {};
   registerForm : FormGroup;
   maxDate: Date;
+  validationErrors : string [] = [];
 
-  constructor(private accountService:AccountsService, private toastr:ToastrService, private fb:FormBuilder) { }
+  constructor(private accountService:AccountsService, private toastr:ToastrService, private fb:FormBuilder, private router:Router) { }
 
   ngOnInit(): void {
 
@@ -50,16 +51,15 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
+    // console.log(this.registerForm.value);
     // console.log(this.model);
-    // this.accountService.register(this.model).subscribe( response => {
-    //   console.log('successful registration');
-    //   this.cancel();
-    // }, error => {
-    //   console.log(error);
-    //   this.toastr.error(error.error);
-    // });
 
-    console.log(this.registerForm.value);
+    // this.registerform.value ~> because this is a reactive form now.
+    this.accountService.register(this.registerForm.value).subscribe( response => {
+      this.router.navigateByUrl('/members');
+    }, error => {
+      this.validationErrors = error;
+    });
   }
 
   cancel() {
